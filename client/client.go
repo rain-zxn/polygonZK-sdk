@@ -1,9 +1,10 @@
 package client
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/polynetwork/polygonZK-sdk/types"
 	"github.com/polynetwork/polygonZK-sdk/utils"
-	"strconv"
 	"strings"
 	"sync/atomic"
 )
@@ -50,10 +51,28 @@ func (this *ClientMgr) IsBlockConsolidated(height uint64) (bool, error) {
 	if client == nil {
 		return false, fmt.Errorf("don't have available client")
 	}
-	block := strconv.FormatUint(height, 16)
+	block := fmt.Sprintf("%#x", height)
 	data, err := client.isBlockConsolidated(this.getNextQid(), block)
 	if err != nil {
 		return false, err
 	}
 	return strings.EqualFold(string(data), "true"), nil
+}
+
+func (this *ClientMgr) GetBatchByNumber(batch uint64) (*types.RpcBatch, error) {
+	client := this.getClient()
+	if client == nil {
+		return nil, fmt.Errorf("don't have available client")
+	}
+	batchNumber := fmt.Sprintf("%#x", batch)
+	data, err := client.getBatchByNumber(this.getNextQid(), batchNumber)
+	if err != nil {
+		return nil, err
+	}
+	rpcBatch := new(types.RpcBatch)
+	err = json.Unmarshal(data, rpcBatch)
+	if err != nil {
+		return nil, fmt.Errorf("Unmarshal rpcBatch err")
+	}
+	return rpcBatch, nil
 }

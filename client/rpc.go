@@ -86,5 +86,9 @@ func (this *RpcClient) getConsolidatedBlockNumber(qid string) ([]byte, error) {
 }
 
 func (this *RpcClient) isBlockConsolidated(qid, block string) ([]byte, error) {
-	return this.sendRpcRequest(qid, PRC_IS_BLOCK_CONSOLIDATED, []interface{}{block})
+	return this.sendRpcRequest(qid, RPC_IS_BLOCK_CONSOLIDATED, []interface{}{block})
+}
+
+func (this *RpcClient) getBatchByNumber(qid, batchNumber string) ([]byte, error) {
+	return this.sendRpcRequest(qid, RPC_GET_BATCH_BY_NUMBER, []interface{}{batchNumber})
 }

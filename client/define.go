@@ -23,5 +23,6 @@ type JsonRpcResponse struct {
 
 const (
 	RPC_CONSOLIDATED_BLOCK_NUMBER = "zkevm_consolidatedBlockNumber"
-	PRC_IS_BLOCK_CONSOLIDATED     = "zkevm_isBlockConsolidated"
+	RPC_IS_BLOCK_CONSOLIDATED     = "zkevm_isBlockConsolidated"
+	RPC_GET_BATCH_BY_NUMBER       = "zkevm_getBatchByNumber"
 )

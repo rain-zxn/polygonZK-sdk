@@ -19,3 +19,8 @@ func Test_IsBlockConsolidated(t *testing.T) {
 	height := uint64(6666)
 	fmt.Println(initClient().IsBlockConsolidated(height))
 }
+
+func Test_GetBatchByNumber(t *testing.T) {
+	batch := uint64(6666)
+	fmt.Println(initClient().GetBatchByNumber(batch))
+}
