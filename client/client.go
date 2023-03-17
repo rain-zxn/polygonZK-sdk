@@ -34,12 +34,12 @@ func (this *ClientMgr) getNextQid() string {
 	return fmt.Sprintf("%d", atomic.AddUint64(&this.qid, 1))
 }
 
-func (this *ClientMgr) GetConsolidatedBlockNumber() (uint64, error) {
+func (this *ClientMgr) ConsolidatedBlockNumber() (uint64, error) {
 	client := this.getClient()
 	if client == nil {
 		return 0, fmt.Errorf("don't have available client")
 	}
-	data, err := client.getConsolidatedBlockNumber(this.getNextQid())
+	data, err := client.consolidatedBlockNumber(this.getNextQid())
 	if err != nil {
 		return 0, err
 	}
@@ -75,4 +75,17 @@ func (this *ClientMgr) GetBatchByNumber(batch uint64) (*types.RpcBatch, error) {
 		return nil, fmt.Errorf("Unmarshal rpcBatch err")
 	}
 	return rpcBatch, nil
+}
+
+func (this *ClientMgr) BatchNumberByBlockNumber(height uint64) (uint64, error) {
+	client := this.getClient()
+	if client == nil {
+		return 0, fmt.Errorf("don't have available client")
+	}
+	block := fmt.Sprintf("%#x", height)
+	data, err := client.batchNumberByBlockNumber(this.getNextQid(), block)
+	if err != nil {
+		return 0, err
+	}
+	return utils.GetHexToUint64(data)
 }

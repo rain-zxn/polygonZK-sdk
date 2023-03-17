@@ -11,8 +11,8 @@ func initClient() *ClientMgr {
 	return client
 }
 
-func Test_GetCurrentBlockHeight(t *testing.T) {
-	fmt.Println(initClient().GetConsolidatedBlockNumber())
+func Test_ConsolidatedBlockNumber(t *testing.T) {
+	fmt.Println(initClient().ConsolidatedBlockNumber())
 }
 
 func Test_IsBlockConsolidated(t *testing.T) {
@@ -23,4 +23,9 @@ func Test_IsBlockConsolidated(t *testing.T) {
 func Test_GetBatchByNumber(t *testing.T) {
 	batch := uint64(6666)
 	fmt.Println(initClient().GetBatchByNumber(batch))
+}
+
+func Test_BatchNumberByBlockNumber(t *testing.T) {
+	batch := uint64(6666)
+	fmt.Println(initClient().BatchNumberByBlockNumber(batch))
 }
