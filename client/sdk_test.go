@@ -2,30 +2,31 @@ package client
 
 import (
 	"fmt"
+	"github.com/ethereum/go-ethereum/rpc"
 	"testing"
 )
 
-func initClient() *ClientMgr {
-	client := new(ClientMgr)
-	client.NewRpcClient().SetAddress("https://rpc.public.zkevm-test.net")
+func initClient() *rpc.Client {
+	client, err := rpc.Dial("https://rpc.public.zkevm-test.net")
+	if err != nil {
+		panic(err)
+	}
 	return client
 }
 
 func Test_ConsolidatedBlockNumber(t *testing.T) {
-	fmt.Println(initClient().ConsolidatedBlockNumber())
+	fmt.Println(ConsolidatedBlockNumber(initClient()))
 }
 
 func Test_IsBlockConsolidated(t *testing.T) {
-	height := uint64(6666)
-	fmt.Println(initClient().IsBlockConsolidated(height))
+	fmt.Println(IsBlockConsolidated(initClient(), 6666))
 }
 
 func Test_GetBatchByNumber(t *testing.T) {
-	batch := uint64(6666)
-	fmt.Println(initClient().GetBatchByNumber(batch))
+	x, _ := GetBatchByNumber(initClient(), 16103)
+	fmt.Println(x.Transactions[len(x.Transactions)-1].String())
 }
 
 func Test_BatchNumberByBlockNumber(t *testing.T) {
-	batch := uint64(6666)
-	fmt.Println(initClient().BatchNumberByBlockNumber(batch))
+	fmt.Println(BatchNumberByBlockNumber(initClient(), 6666))
 }

@@ -1,91 +1,46 @@
 package client
 
 import (
-	"encoding/json"
-	"fmt"
+	"context"
+	"github.com/ethereum/go-ethereum/rpc"
 	"github.com/polynetwork/polygonZK-sdk/types"
-	"github.com/polynetwork/polygonZK-sdk/utils"
-	"strings"
-	"sync/atomic"
 )
 
-type ClientMgr struct {
-	rpc *RpcClient //Rpc client used the rpc api of ontology
-	qid uint64
-}
-
-func (this *ClientMgr) NewRpcClient() *RpcClient {
-	this.rpc = NewRpcClient()
-	return this.rpc
-}
-
-func (this *ClientMgr) GetRpcClient() *RpcClient {
-	return this.rpc
-}
-
-func (this *ClientMgr) getClient() *RpcClient {
-	if this.rpc != nil {
-		return this.rpc
-	}
-	return nil
-}
-
-func (this *ClientMgr) getNextQid() string {
-	return fmt.Sprintf("%d", atomic.AddUint64(&this.qid, 1))
-}
-
-func (this *ClientMgr) ConsolidatedBlockNumber() (uint64, error) {
-	client := this.getClient()
-	if client == nil {
-		return 0, fmt.Errorf("don't have available client")
-	}
-	data, err := client.consolidatedBlockNumber(this.getNextQid())
+func ConsolidatedBlockNumber(rpcClient *rpc.Client) (uint64, error) {
+	var result types.ArgUint64
+	err := rpcClient.CallContext(context.Background(), &result, RPC_CONSOLIDATED_BLOCK_NUMBER)
 	if err != nil {
 		return 0, err
 	}
-	return utils.GetHexToUint64(data)
+	return uint64(result), nil
 }
 
-func (this *ClientMgr) IsBlockConsolidated(height uint64) (bool, error) {
-	client := this.getClient()
-	if client == nil {
-		return false, fmt.Errorf("don't have available client")
-	}
-	block := fmt.Sprintf("%#x", height)
-	data, err := client.isBlockConsolidated(this.getNextQid(), block)
+func IsBlockConsolidated(rpcClient *rpc.Client, height uint64) (bool, error) {
+	block := types.ArgUint64(height)
+	var result bool
+	err := rpcClient.CallContext(context.Background(), &result, RPC_IS_BLOCK_CONSOLIDATED, block)
 	if err != nil {
 		return false, err
 	}
-	return strings.EqualFold(string(data), "true"), nil
+	return result, nil
 }
 
-func (this *ClientMgr) GetBatchByNumber(batch uint64) (*types.RpcBatch, error) {
-	client := this.getClient()
-	if client == nil {
-		return nil, fmt.Errorf("don't have available client")
-	}
-	batchNumber := fmt.Sprintf("%#x", batch)
-	data, err := client.getBatchByNumber(this.getNextQid(), batchNumber)
+func GetBatchByNumber(rpcClient *rpc.Client, batch uint64) (*types.RpcBatch, error) {
+	batchNumber := types.ArgUint64(batch)
+	result := new(types.RpcBatch)
+	err := rpcClient.CallContext(context.Background(), result, RPC_GET_BATCH_BY_NUMBER, batchNumber)
 	if err != nil {
-		return nil, err
+		return result, err
 	}
-	rpcBatch := new(types.RpcBatch)
-	err = json.Unmarshal(data, rpcBatch)
-	if err != nil {
-		return nil, fmt.Errorf("Unmarshal rpcBatch err")
-	}
-	return rpcBatch, nil
+	return result, nil
 }
 
-func (this *ClientMgr) BatchNumberByBlockNumber(height uint64) (uint64, error) {
-	client := this.getClient()
-	if client == nil {
-		return 0, fmt.Errorf("don't have available client")
-	}
-	block := fmt.Sprintf("%#x", height)
-	data, err := client.batchNumberByBlockNumber(this.getNextQid(), block)
+func BatchNumberByBlockNumber(rpcClient *rpc.Client, height uint64) (uint64, error) {
+	block := types.ArgUint64(height)
+	var result types.ArgUint64
+	err := rpcClient.CallContext(context.Background(), &result, RPC_BATCH_NUMBER_BY_BLOCK_NUMBER, block)
 	if err != nil {
 		return 0, err
 	}
-	return utils.GetHexToUint64(data)
+	return uint64(result), nil
 }
