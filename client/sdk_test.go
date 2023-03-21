@@ -2,12 +2,12 @@ package client
 
 import (
 	"fmt"
-	"github.com/ethereum/go-ethereum/rpc"
 	"testing"
 )
 
-func initClient() *rpc.Client {
-	client, err := rpc.Dial("https://rpc.public.zkevm-test.net")
+func initClient() *PolygonZkClient {
+	url := "https://rpc.public.zkevm-test.net"
+	client, err := NewPolygonZkClient(url)
 	if err != nil {
 		panic(err)
 	}
@@ -15,18 +15,18 @@ func initClient() *rpc.Client {
 }
 
 func Test_ConsolidatedBlockNumber(t *testing.T) {
-	fmt.Println(ConsolidatedBlockNumber(initClient()))
+	fmt.Println(initClient().ConsolidatedBlockNumber())
 }
 
 func Test_IsBlockConsolidated(t *testing.T) {
-	fmt.Println(IsBlockConsolidated(initClient(), 6666))
+	fmt.Println(initClient().IsBlockConsolidated(6666))
 }
 
 func Test_GetBatchByNumber(t *testing.T) {
-	x, _ := GetBatchByNumber(initClient(), 16103)
+	x, _ := initClient().GetBatchByNumber(16103)
 	fmt.Println(x.Transactions[len(x.Transactions)-1].String())
 }
 
 func Test_BatchNumberByBlockNumber(t *testing.T) {
-	fmt.Println(BatchNumberByBlockNumber(initClient(), 6666))
+	fmt.Println(initClient().BatchNumberByBlockNumber(6666))
 }
