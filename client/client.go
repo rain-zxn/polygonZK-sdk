@@ -6,19 +6,19 @@ import (
 	"github.com/polynetwork/polygonZK-sdk/types"
 )
 
-type PolygonZkClient struct {
+type Client struct {
 	*rpc.Client
 }
 
-func NewPolygonZkClient(url string) (*PolygonZkClient, error) {
+func NewPolygonZkClient(url string) (*Client, error) {
 	client, err := rpc.Dial(url)
 	if err != nil {
 		return nil, err
 	}
-	return &PolygonZkClient{client}, nil
+	return &Client{client}, nil
 }
 
-func (p *PolygonZkClient) ConsolidatedBlockNumber() (uint64, error) {
+func (p *Client) ConsolidatedBlockNumber() (uint64, error) {
 	var result types.ArgUint64
 	err := p.CallContext(context.Background(), &result, RPC_CONSOLIDATED_BLOCK_NUMBER)
 	if err != nil {
@@ -27,7 +27,7 @@ func (p *PolygonZkClient) ConsolidatedBlockNumber() (uint64, error) {
 	return uint64(result), nil
 }
 
-func (p *PolygonZkClient) IsBlockConsolidated(height uint64) (bool, error) {
+func (p *Client) IsBlockConsolidated(height uint64) (bool, error) {
 	block := types.ArgUint64(height)
 	var result bool
 	err := p.CallContext(context.Background(), &result, RPC_IS_BLOCK_CONSOLIDATED, block)
@@ -37,7 +37,7 @@ func (p *PolygonZkClient) IsBlockConsolidated(height uint64) (bool, error) {
 	return result, nil
 }
 
-func (p *PolygonZkClient) GetBatchByNumber(batch uint64) (*types.RpcBatch, error) {
+func (p *Client) GetBatchByNumber(batch uint64) (*types.RpcBatch, error) {
 	batchNumber := types.ArgUint64(batch)
 	result := new(types.RpcBatch)
 	err := p.CallContext(context.Background(), result, RPC_GET_BATCH_BY_NUMBER, batchNumber)
@@ -47,7 +47,7 @@ func (p *PolygonZkClient) GetBatchByNumber(batch uint64) (*types.RpcBatch, error
 	return result, nil
 }
 
-func (p *PolygonZkClient) BatchNumberByBlockNumber(height uint64) (uint64, error) {
+func (p *Client) BatchNumberByBlockNumber(height uint64) (uint64, error) {
 	block := types.ArgUint64(height)
 	var result types.ArgUint64
 	err := p.CallContext(context.Background(), &result, RPC_BATCH_NUMBER_BY_BLOCK_NUMBER, block)

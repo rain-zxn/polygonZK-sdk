@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func initClient() *PolygonZkClient {
+func initClient() *Client {
 	url := "https://rpc.public.zkevm-test.net"
 	client, err := NewPolygonZkClient(url)
 	if err != nil {
